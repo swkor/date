@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar</title>
+  <style>
+/* 달력 */
+.dateHead div {
+  font-weight: bold;
+  background: #441df1;
+  color: #fff;
+  text-align: center;
+  border-radius: 20px;
+}
+.dateHead div:first-child,
+.dateHead div:last-child {
+  background: #f00f0f;
+  color: #fff;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 5px;
+}
+
+.grid div {
+  padding: 0.2rem;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.dateBoard div {
+  color: #000;
+  font-size: 2.7rem;
+  font-weight: bold;
+  min-height: 4.5rem;
+  text-align: center;
+  padding: 0.1rem 0.1rem;
+  border-radius: 0 0 20px 0;
+  border: 1px solid #111;
+}
+
+.noColor {
+  background: #ddd;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 3rem;
+}
+
+/* 좌우 버튼 */
+.btn {
+ display: block;
+ width: 20px;
+ height: 20px;
+ border: 3px solid #000;
+ border-width: 3px 3px 0 0;
+ cursor: pointer;
+}
+
+.prevDay {
+  transform: rotate(-135deg);
+}
+
+.nextDay {
+  transform: rotate(45deg);
+}
+
+/* ---- */
+
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  box-sizing: border-box;  
+  font-family: Pretendard;
+}
+
+.rap {
+  max-width: 820px;
+  padding: 0 0.1rem;
+  margin-top: 0.1rem;
+}
+
+.dateHead {
+  margin: .2rem 0;
+}    
+  </style>
+</head>
+<body>
+  <div class='cale'></div>  
+  <script>
+    class swCalendar {
+      constructor(tagDay) {
+        let tagDiv = document.querySelector(tagDay);
+        tagDiv.innerHTML =`   
+<div class="header">
+  <div class="btn prevDay"></div>
+  <h2 class='dateTitle'></h2>
+  <div class="btn nextDay"></div>
+</div>
+<div class="grid dateHead">
+  <div>일</div>
+  <div>월</div>
+  <div>화</div>
+  <div>수</div>
+  <div>목</div>
+  <div>금</div>
+  <div>토</div>
+</div>
+<div class="grid dateBoard"></div>
+`;
+        let tagboard = tagDiv.querySelector('.dateBoard');
+        let htmlDummy = '';
+        for (let i = 0; i < 42; i++) {
+          htmlDummy += `<div></div>`;
+        }
+        tagboard.innerHTML = htmlDummy;
+        this.tagDay = tagboard.querySelectorAll(`div`);
+        this.tagTitle = tagDiv.querySelector('.dateTitle');
+        this.date = new Date();
+        this.view(this.date);
+
+        tagDiv.querySelector(`.prevDay`).onclick = () => {
+          this.date = new Date(this.date.setMonth(this.month - 2));
+          this.view(this.date);
+        }
+        tagDiv.querySelector(`.nextDay`).onclick = () => {
+          this.date = new Date(this.date.setMonth(this.month));
+          this.view(this.date);
+        }
+      }
+      view(date) {
+        const currentYear = this.date.getFullYear();
+        const currentMonth = this.date.getMonth() + 1;
+        const firstDay = new Date(this.date.setDate(1)).getDay();
+        const lastDay = new Date(currentYear, currentMonth, 0).getDate();
+        this.year = currentYear;
+        this.month = currentMonth;
+        this.firstDay = firstDay;
+        this.tagTitle.innerText = `${currentYear}년 ${currentMonth}월`;
+        for (let i = 0; i < firstDay; i++) {
+          this.tagDay[i].innerHTML = '';
+          this.tagDay[i].className = 'noColor';
+        }
+        for (let d = 1; d <= lastDay; d++) {
+          let i = d + firstDay - 1;
+          this.tagDay[i].innerHTML = d;
+          this.tagDay[i].className = '';
+        }
+        for (let i = firstDay + lastDay; i < 42; i++) {
+          this.tagDay[i].innerHTML = '';
+          this.tagDay[i].className = 'noColor';
+        }
+      }
+    }
+    const calender2 = new swCalendar('.cale');
+  </script>
+</body>
+</html>
